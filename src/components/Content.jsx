@@ -1,23 +1,24 @@
 import { IoAddCircle, IoTime } from "react-icons/io5";
 import ArticleCard from "./ArticleCard.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { baseApiUrl } from "../helpers/Api.jsx";
 
 export default function Content() {
     const [allArticles, setAllArticles] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const [pageOffset, setPageOffset] = useState();
+    const [pageOffset, setPageOffset] = useState(0);
+    const [pagination, setPagination] = useState(0);
     const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
 
-    const fetchArticles = async () => {
+    const fetchArticles = useCallback(async () => {
         const apiEndpoint = debouncedSearchText !== ""
             ? `${baseApiUrl}&keywords=${debouncedSearchText}`
             : baseApiUrl;
         const response = await fetch(apiEndpoint + "&offset=" + pageOffset);
         const articles = await response.json();
         setAllArticles(articles.data);
-        setPageOffset(articles.pagination.offset + articles.pagination.count)
-    }
+        setPageOffset(articles.pagination.offset + articles.pagination.count);
+    }, [debouncedSearchText, pagination]);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -31,7 +32,7 @@ export default function Content() {
 
     useEffect(() => {
         fetchArticles();
-    }, [debouncedSearchText]);
+    }, [debouncedSearchText, fetchArticles]);
 
     return (
         <main className="flex flex-col items-center grow p-10 gap-8">
@@ -57,7 +58,7 @@ export default function Content() {
                     <hr className="my-3" />
 
                     <button
-                        onClick={() => {fetchArticles(); window.scrollTo(0, 0)}}
+                        onClick={() => { setPagination(pageOffset); window.scrollTo(0, 0); }}
                         className="mr-auto bg-blue-500 text-white py-2 px-4 rounded flex gap-1 items-center"
                     >
                         <IoAddCircle className="size-5" />
