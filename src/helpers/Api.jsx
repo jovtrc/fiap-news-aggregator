@@ -1,0 +1,1 @@
+export const baseApiUrl = "https://api.mediastack.com/v1/news?access_key=14d335b0254ba81ccca964412a322c2a&sources=nytimes,the-verge,engadget,cnn,g1"
