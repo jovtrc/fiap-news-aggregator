@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    {"source": "/movies/:match*", "destination": "https://fiap-projects.vercel.app/"},
+    {"source": "/", "destination": "https://fiap.joaoc.dev/"}
+  ]
+}
